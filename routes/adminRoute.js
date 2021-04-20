@@ -2,18 +2,19 @@ const express = require('express');
 const fastCsv = require('fast-csv');
 const fs = require('fs');
 
+
 const router = express.Router();
 
-module.exports = function(db){
+module.exports = function(db, jwt){
 
-    router.get('/readDataAsCsv', (req, res) => {
-
+    router.get('/readDataAsCsv', jwt.authenticateJWT, (req, res) => {
+        console.log('inside readdataascsv')
         db.readDataAsCSV((err, data) => {
             if(err){
                 res.json(err)
                 return
             }
-            
+            console.log(data)
             const ws = fs.createWriteStream("studentInfo.csv");
             const jsonData = JSON.parse(JSON.stringify(data));
             console.log("jsonData", jsonData);
